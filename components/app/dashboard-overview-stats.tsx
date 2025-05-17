@@ -23,7 +23,7 @@ import { Icons } from "@/components/shared/icons"
 
 interface OverviewStatsProps {
   stats: {
-    accounts: number
+    credentials: number
     cards: number
     secrets: number
   }
@@ -36,18 +36,27 @@ export async function OverviewStats({ stats }: OverviewStatsProps) {
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
       <StatsCard
         title="Total Accounts"
-        value={stats.accounts}
-        icon={<Icons.user className="text-muted-foreground h-4 w-4" />}
+        value={stats.credentials}
+        icon={
+          <Icons.user className="text-muted-foreground group-hover:text-primary h-4 w-4 transition-colors" />
+        }
+        description="Total number of accounts"
       />
       <StatsCard
         title="Total Payment Cards"
         value={stats.cards}
-        icon={<Icons.creditCard className="text-muted-foreground h-4 w-4" />}
+        icon={
+          <Icons.creditCard className="text-muted-foreground group-hover:text-primary h-4 w-4 transition-colors" />
+        }
+        description="Total number of payment cards"
       />
       <StatsCard
         title="Total Secure Notes"
         value={stats.secrets}
-        icon={<Icons.key className="text-muted-foreground h-4 w-4" />}
+        icon={
+          <Icons.key className="text-muted-foreground group-hover:text-primary h-4 w-4 transition-colors" />
+        }
+        description="Total number of secure notes"
       />
     </div>
   )

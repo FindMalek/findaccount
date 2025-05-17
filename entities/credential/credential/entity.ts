@@ -17,8 +17,6 @@ export class CredentialEntity {
       description: entity.description,
       loginUrl: entity.loginUrl,
 
-      lastCopied: entity.lastCopied,
-      lastViewed: entity.lastViewed,
       updatedAt: entity.updatedAt,
       createdAt: entity.createdAt,
 

@@ -3,7 +3,7 @@
 import { CredentialEntity } from "@/entities/credential"
 import { database } from "@/prisma/client"
 import {
-  CredentialDto,
+  CredentialSchemaDto,
   CredentialSimpleRo,
   type CredentialDto as CredentialDtoType,
 } from "@/schemas/credential"
@@ -25,7 +25,7 @@ export async function createCredential(data: CredentialDtoType): Promise<{
     const session = await verifySession()
 
     // Validate using our DTO schema
-    const validatedData = CredentialDto.parse(data)
+    const validatedData = CredentialSchemaDto.parse(data)
 
     try {
       // Check if platform exists
@@ -161,7 +161,7 @@ export async function updateCredential(
     }
 
     // Validate using our DTO schema (partial)
-    const partialCredentialSchema = CredentialDto.partial()
+    const partialCredentialSchema = CredentialSchemaDto.partial()
     const validatedData = partialCredentialSchema.parse(data)
 
     try {

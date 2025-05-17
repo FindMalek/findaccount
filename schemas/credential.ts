@@ -1,7 +1,7 @@
 import { AccountStatus } from "@prisma/client"
 import { z } from "zod"
 
-export const CredentialDto = z.object({
+export const CredentialSchemaDto = z.object({
   username: z.string().min(1, "Username is required"),
   password: z.string().min(1, "Password is required"),
   status: z.nativeEnum(AccountStatus).optional().default(AccountStatus.ACTIVE),
@@ -22,8 +22,6 @@ export const CredentialSimpleRoSchema = z.object({
   description: z.string().nullable(),
   loginUrl: z.string().nullable(),
 
-  lastCopied: z.date().nullable(),
-  lastViewed: z.date().nullable(),
   createdAt: z.date(),
   updatedAt: z.date(),
 
@@ -32,7 +30,7 @@ export const CredentialSimpleRoSchema = z.object({
   containerId: z.string().nullable(),
 })
 
-export type CredentialDto = z.infer<typeof CredentialDto>
+export type CredentialDto = z.infer<typeof CredentialSchemaDto>
 export type CredentialSimpleRo = z.infer<typeof CredentialSimpleRoSchema>
 
 export const CredentialMetadataDto = z.object({

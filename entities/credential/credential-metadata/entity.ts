@@ -1,11 +1,11 @@
-import { CredentialMetadataRo } from "@/schemas/credential"
+import { CredentialMetadataSimpleRo } from "@/schemas/credential"
 
 import { CredentialMetadataEntitySimpleDbData } from "./query"
 
 export class CredentialMetadataEntity {
   static getSimpleRo(
     entity: CredentialMetadataEntitySimpleDbData
-  ): CredentialMetadataRo {
+  ): CredentialMetadataSimpleRo {
     return {
       id: entity.id,
       recoveryEmail: entity.recoveryEmail,

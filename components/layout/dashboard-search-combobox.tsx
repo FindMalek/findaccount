@@ -11,7 +11,6 @@ import {
   User,
 } from "lucide-react"
 
-
 import { Button } from "@/components/ui/button"
 import {
   CommandDialog,
@@ -28,8 +27,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-
-
 
 export function DashboardSearchCombobox() {
   const [open, setOpen] = React.useState(false)
