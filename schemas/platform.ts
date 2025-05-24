@@ -4,6 +4,7 @@ import { z } from "zod"
 export const PlatformDto = z.object({
   name: z.string().min(1, "Name is required"),
   logo: z.string().optional(),
+  loginUrl: z.string().optional(),
   status: z
     .nativeEnum(PlatformStatus)
     .optional()
@@ -19,6 +20,7 @@ export const PlatformSimpleRoSchema = z.object({
   status: z.nativeEnum(PlatformStatus),
 
   logo: z.string().nullable(),
+  loginUrl: z.string().nullable(),
 
   updatedAt: z.date(),
   createdAt: z.date(),

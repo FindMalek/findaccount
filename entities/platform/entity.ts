@@ -11,6 +11,7 @@ export class PlatformEntity {
       status: entity.status,
 
       logo: entity.logo,
+      loginUrl: entity.loginUrl,
 
       updatedAt: entity.updatedAt,
       createdAt: entity.createdAt,

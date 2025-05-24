@@ -21,8 +21,9 @@ model Health {
 model Platform {
   id String @id @default(cuid())
 
-  name String
-  logo String?
+  name     String
+  logo     String?
+  loginUrl String?
 
   status PlatformStatus @default(PENDING)
 

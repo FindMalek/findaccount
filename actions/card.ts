@@ -36,7 +36,6 @@ export async function createCard(data: CardDtoType): Promise<{
       // Create card with Prisma
       const card = await database.card.create({
         data: {
-          id: crypto.randomUUID(),
           ...validatedData,
           expiryDate,
           userId: session.user.id,

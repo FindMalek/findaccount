@@ -3,6 +3,8 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 
+import { checkIsActive } from "@/lib/utils"
+
 import {
   SidebarMenuButton,
   SidebarMenuItem,
@@ -28,7 +30,7 @@ export function DashboardSidebarMenuItemComponent({
   const pathname = usePathname()
   const { state, isMobile } = useSidebar()
   const isCollapsed = !isMobile && state === "collapsed"
-  const pathIsActive = pathname.includes(href)
+  const pathIsActive = checkIsActive(pathname, href)
 
   return (
     <SidebarMenuItem>

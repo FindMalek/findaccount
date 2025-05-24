@@ -7,6 +7,34 @@ import { Prisma } from "@prisma/client"
 import { z } from "zod"
 
 import { verifySession } from "@/lib/auth/verify"
+import { getOrReturnEmptyObject } from "@/lib/utils"
+
+/**
+ * Utility function to create tags and return connection objects
+ */
+export async function createTagsAndGetConnections(
+  tags: Array<{ name: string; color?: string }>,
+  userId: string,
+  containerId?: string
+): Promise<{ connect: Array<{ id: string }> }> {
+  const tagPromises = tags.map(async (tag) => {
+    const result = await createTag({
+      name: tag.name,
+      color: tag.color,
+      userId,
+      ...getOrReturnEmptyObject(containerId, "containerId"),
+    })
+    return result.success ? result.tag : null
+  })
+
+  const createdTags = (await Promise.all(tagPromises)).filter(
+    (tag): tag is NonNullable<typeof tag> => tag !== null
+  )
+
+  return {
+    connect: createdTags.map((tag) => ({ id: tag.id })),
+  }
+}
 
 /**
  * Create a new tag
@@ -24,10 +52,24 @@ export async function createTag(data: TagDtoType): Promise<{
     const validatedData = TagDto.parse(data)
 
     try {
+      // Check if tag with same name already exists for this user
+      const existingTag = await database.tag.findFirst({
+        where: {
+          name: validatedData.name,
+          userId: session.user.id,
+        },
+      })
+
+      if (existingTag) {
+        return {
+          success: true,
+          tag: TagEntity.getSimpleRo(existingTag),
+        }
+      }
+
       // Create tag with Prisma
       const tag = await database.tag.create({
         data: {
-          id: crypto.randomUUID(),
           ...validatedData,
           userId: session.user.id,
         },

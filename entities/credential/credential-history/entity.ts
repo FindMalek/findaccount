@@ -15,6 +15,9 @@ export class CredentialHistoryEntity {
       // TODO: Consider masking or partial display for ROs if sensitive
       newPassword: entity.newPassword,
 
+      encryptionKey: entity.encryptionKey,
+      iv: entity.iv,
+
       changedAt: entity.changedAt,
 
       userId: entity.userId,

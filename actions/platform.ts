@@ -33,7 +33,6 @@ export async function createPlatform(data: PlatformDtoType): Promise<{
       // Create platform with Prisma
       const platform = await database.platform.create({
         data: {
-          id: crypto.randomUUID(),
           ...validatedData,
           userId: session.user.id,
           createdAt: new Date(),

@@ -3,14 +3,19 @@
 import { CredentialEntity } from "@/entities/credential"
 import { database } from "@/prisma/client"
 import {
-  CredentialDto,
+  CredentialMetadataSchemaDto,
+  CredentialSchemaDto,
   CredentialSimpleRo,
   type CredentialDto as CredentialDtoType,
+  type CredentialMetadataDto as CredentialMetadataDtoType,
 } from "@/schemas/credential"
 import { Prisma } from "@prisma/client"
 import { z } from "zod"
 
 import { verifySession } from "@/lib/auth/verify"
+import { getOrReturnEmptyObject } from "@/lib/utils"
+
+import { createTagsAndGetConnections } from "@/actions/tag"
 
 /**
  * Create a new credential
@@ -23,12 +28,9 @@ export async function createCredential(data: CredentialDtoType): Promise<{
 }> {
   try {
     const session = await verifySession()
-
-    // Validate using our DTO schema
-    const validatedData = CredentialDto.parse(data)
+    const validatedData = CredentialSchemaDto.parse(data)
 
     try {
-      // Check if platform exists
       const platform = await database.platform.findUnique({
         where: { id: validatedData.platformId },
       })
@@ -40,13 +42,24 @@ export async function createCredential(data: CredentialDtoType): Promise<{
         }
       }
 
-      // Create credential with Prisma
+      const tagConnections = await createTagsAndGetConnections(
+        validatedData.tags,
+        session.user.id,
+        validatedData.containerId
+      )
+
       const credential = await database.credential.create({
         data: {
-          id: crypto.randomUUID(),
-          ...validatedData,
+          username: validatedData.username,
+          password: validatedData.password,
+          encryptionKey: validatedData.encryptionKey,
+          iv: validatedData.iv,
+          status: validatedData.status,
+          platformId: validatedData.platformId,
+          description: validatedData.description,
           userId: session.user.id,
-          createdAt: new Date(),
+          tags: tagConnections,
+          ...getOrReturnEmptyObject(validatedData.containerId, "containerId"),
         },
       })
 
@@ -161,7 +174,7 @@ export async function updateCredential(
     }
 
     // Validate using our DTO schema (partial)
-    const partialCredentialSchema = CredentialDto.partial()
+    const partialCredentialSchema = CredentialSchemaDto.partial()
     const validatedData = partialCredentialSchema.parse(data)
 
     try {
@@ -169,9 +182,11 @@ export async function updateCredential(
       if (validatedData.password) {
         await database.credentialHistory.create({
           data: {
-            id: crypto.randomUUID(),
             oldPassword: existingCredential.password,
             newPassword: validatedData.password,
+            encryptionKey:
+              validatedData.encryptionKey || existingCredential.encryptionKey,
+            iv: validatedData.iv || existingCredential.iv,
             credentialId: id,
             userId: session.user.id,
             changedAt: new Date(),
@@ -179,10 +194,19 @@ export async function updateCredential(
         })
       }
 
+      const tagConnections = await createTagsAndGetConnections(
+        validatedData.tags || [],
+        session.user.id,
+        validatedData.containerId
+      )
+
       // Update credential with Prisma
       const updatedCredential = await database.credential.update({
         where: { id },
-        data: validatedData,
+        data: {
+          ...validatedData,
+          tags: tagConnections,
+        },
       })
 
       return {
@@ -371,6 +395,94 @@ export async function copyCredentialPassword(id: string): Promise<{
       }
     }
     console.error("Copy credential password error:", error)
+    return {
+      success: false,
+      error: "Something went wrong. Please try again.",
+    }
+  }
+}
+
+/**
+ * Create a new credential with optional metadata
+ */
+export async function createCredentialWithMetadata(
+  credentialData: CredentialDtoType,
+  metadataData?: Omit<CredentialMetadataDtoType, "credentialId">
+): Promise<{
+  success: boolean
+  credential?: CredentialSimpleRo
+  error?: string
+  issues?: z.ZodIssue[]
+}> {
+  try {
+    const session = await verifySession()
+    const validatedCredentialData = CredentialSchemaDto.parse(credentialData)
+
+    try {
+      const tagConnections = await createTagsAndGetConnections(
+        validatedCredentialData.tags,
+        session.user.id,
+        validatedCredentialData.containerId
+      )
+
+      // Use a transaction to create both credential and metadata
+      const result = await database.$transaction(async (tx) => {
+        const credential = await tx.credential.create({
+          data: {
+            username: validatedCredentialData.username,
+            password: validatedCredentialData.password,
+            encryptionKey: validatedCredentialData.encryptionKey,
+            iv: validatedCredentialData.iv,
+            status: validatedCredentialData.status,
+            platformId: validatedCredentialData.platformId,
+            description: validatedCredentialData.description,
+            userId: session.user.id,
+            tags: tagConnections,
+            ...getOrReturnEmptyObject(
+              validatedCredentialData.containerId,
+              "containerId"
+            ),
+          },
+        })
+
+        // Create metadata if provided
+        if (metadataData) {
+          const validatedMetadataData = CredentialMetadataSchemaDto.parse({
+            ...metadataData,
+            credentialId: credential.id,
+          })
+
+          await tx.credentialMetadata.create({
+            data: validatedMetadataData,
+          })
+        }
+
+        return credential
+      })
+
+      return {
+        success: true,
+        credential: CredentialEntity.getSimpleRo(result),
+      }
+    } catch (error) {
+      throw error
+    }
+  } catch (error) {
+    if (error instanceof Error && error.message === "Not authenticated") {
+      return {
+        success: false,
+        error: "Not authenticated",
+      }
+    }
+    if (error instanceof z.ZodError) {
+      return {
+        success: false,
+        error: "Validation failed",
+        issues: error.issues,
+      }
+    }
+
+    console.error("Credential creation error:", error)
     return {
       success: false,
       error: "Something went wrong. Please try again.",

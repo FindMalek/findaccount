@@ -30,7 +30,6 @@ export async function createContainer(data: ContainerDtoType): Promise<{
       // Create container with Prisma
       const container = await database.container.create({
         data: {
-          id: crypto.randomUUID(),
           ...validatedData,
           userId: session.user.id,
           createdAt: new Date(),

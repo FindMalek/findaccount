@@ -49,7 +49,6 @@ export async function createSecret(data: SecretDtoType): Promise<{
       // Create secret with Prisma
       const secret = await database.secret.create({
         data: {
-          id: crypto.randomUUID(),
           ...secretData,
           userId: session.user.id,
           createdAt: new Date(),
