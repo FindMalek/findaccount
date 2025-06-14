@@ -1,6 +1,7 @@
 import { encryptedDataDtoSchema } from "@/schemas/encryption/encryption"
-import { secretMetadataDtoSchema } from "./secret-metadata"
 import { z } from "zod"
+
+import { secretMetadataDtoSchema } from "./secret-metadata"
 
 export const secretDtoSchema = z.object({
   name: z.string().min(1, "Name is required"),

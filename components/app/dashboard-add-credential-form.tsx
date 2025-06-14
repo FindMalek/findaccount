@@ -139,9 +139,7 @@ export function DashboardAddCredentialForm({
         <FormDescription>
           Your login identifier (username, email, phone number, etc.)
         </FormDescription>
-        {!sensitiveData.identifier.trim() && (
-          <p className="text-destructive text-sm">Identifier is required</p>
-        )}
+        <FormMessage />
       </FormItem>
 
       {/* Password Field */}
@@ -194,12 +192,9 @@ export function DashboardAddCredentialForm({
             </div>
           </div>
         )}
-        {!sensitiveData.password.trim() && (
-          <p className="text-destructive text-sm">Password is required</p>
-        )}
+        <FormMessage />
       </FormItem>
 
-      {/* Tags */}
       <FormField
         control={form.control}
         name="tags"

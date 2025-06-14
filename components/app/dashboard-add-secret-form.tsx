@@ -2,20 +2,13 @@
 
 import { useCallback, useEffect, useState } from "react"
 import { SecretDto } from "@/schemas/secrets/secret"
-import { SecretType } from "@prisma/client"
 import { useForm } from "react-hook-form"
 
 import { cn } from "@/lib/utils"
 
 import { Icons } from "@/components/shared/icons"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible"
 import {
   FormControl,
   FormDescription,
@@ -26,18 +19,6 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-
-const SECRET_TYPES = [
-  { value: SecretType.API_KEY, label: "API Key" },
-  { value: SecretType.DATABASE_URL, label: "Database URL" },
-  { value: SecretType.CLOUD_STORAGE_KEY, label: "Cloud Storage Key" },
-  { value: SecretType.SSH_KEY, label: "SSH Key" },
-  { value: SecretType.JWT_SECRET, label: "JWT Secret" },
-  { value: SecretType.OAUTH_TOKEN, label: "OAuth Token" },
-  { value: SecretType.WEBHOOK_SECRET, label: "Webhook Secret" },
-  { value: SecretType.ENCRYPTION_KEY, label: "Encryption Key" },
-  { value: SecretType.TOKEN, label: "Token" },
-]
 
 interface SecretKeyValue {
   key: string
@@ -66,7 +47,6 @@ export function DashboardAddSecretForm({
   sensitiveData,
   setSensitiveData,
 }: SecretFormProps) {
-  const [showMetadata, setShowMetadata] = useState(false)
   const [keyValuePairs, setKeyValuePairs] = useState<SecretKeyValue[]>([
     { id: "1", key: "", value: "" },
   ])
@@ -220,34 +200,8 @@ export function DashboardAddSecretForm({
     }
   }, [form, keyValuePairs, sensitiveData.value, parseMultipleEnvLines])
 
-  const hasMetadataValues = () => {
-    const values = form.getValues()
-    return !!(values.metadata && values.metadata.length > 0)
-  }
-
-  const getMetadataLabelsForSecret = () => {
-    const values = form.getValues()
-    if (!values.metadata || values.metadata.length === 0) {
-      return ""
-    }
-
-    const labels = values.metadata
-      .map((meta) => {
-        const secretType = SECRET_TYPES.find((t) => t.value === meta.type)
-        return secretType?.label || meta.type
-      })
-      .slice(0, 3)
-
-    if (values.metadata.length > 3) {
-      return `${labels.join(", ")} +${values.metadata.length - 3}`
-    }
-
-    return labels.join(", ")
-  }
-
   return (
     <div className="space-y-6">
-      {/* Title Section */}
       <div className="space-y-2">
         <Label htmlFor="title" className="text-sm font-medium">
           Title
@@ -261,7 +215,6 @@ export function DashboardAddSecretForm({
         />
       </div>
 
-      {/* Secret Key-Value Section */}
       <div className="space-y-4">
         <Label className="text-sm font-medium">Secrets</Label>
 
@@ -338,7 +291,6 @@ export function DashboardAddSecretForm({
               </div>
             ))}
 
-            {/* Add Another Button */}
             <div className="border-border border-t p-3 sm:p-4">
               <Button
                 type="button"
@@ -384,51 +336,6 @@ export function DashboardAddSecretForm({
           </FormItem>
         )}
       />
-
-      {/* Metadata Section */}
-      <Collapsible open={showMetadata} onOpenChange={setShowMetadata}>
-        <CollapsibleTrigger asChild>
-          <Button
-            type="button"
-            variant="ghost"
-            className={cn(
-              "hover:bg-muted/50 flex w-full items-center justify-between p-4",
-              showMetadata && "bg-muted/55"
-            )}
-          >
-            <div className="flex items-center gap-3">
-              <div className="flex items-center gap-2">
-                <Icons.add className="h-4 w-4" />
-                <span className="font-medium">Additional Information</span>
-              </div>
-              {hasMetadataValues() && (
-                <Badge variant="secondary" className="text-xs">
-                  {getMetadataLabelsForSecret()}
-                </Badge>
-              )}
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-muted-foreground text-sm">
-                {showMetadata ? "Hide" : "Optional"}
-              </span>
-              <Icons.chevronDown
-                className={`h-4 w-4 transition-transform ${
-                  showMetadata ? "rotate-180" : ""
-                }`}
-              />
-            </div>
-          </Button>
-        </CollapsibleTrigger>
-
-        <CollapsibleContent className="space-y-4">
-          <div className="bg-muted/55 space-y-4 p-4">
-            <p className="text-muted-foreground text-sm">
-              Additional metadata fields would be managed separately through the
-              new secret metadata system.
-            </p>
-          </div>
-        </CollapsibleContent>
-      </Collapsible>
     </div>
   )
 }

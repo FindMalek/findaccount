@@ -3,15 +3,16 @@ import Image from "next/image"
 import Link from "next/link"
 
 import { notFoundMetadata } from "@/config/site"
+
 import { Button } from "@/components/ui/button"
 
 export const metadata: Metadata = notFoundMetadata()
 
 export default function NotFound() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-background px-4 py-12 sm:px-6 lg:px-8">
+    <div className="bg-background flex min-h-screen flex-col items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-md text-center">
-        <div className="mx-auto mb-8 h-64 w-64 relative">
+        <div className="relative mx-auto mb-8 h-64 w-64">
           <Image
             src="/not-found.png"
             alt="Page not found"
@@ -20,13 +21,13 @@ export default function NotFound() {
             priority
           />
         </div>
-        <h1 className="mb-4 text-6xl font-bold text-foreground">404</h1>
-        <h2 className="mb-4 text-2xl font-semibold text-foreground">
+        <h1 className="text-foreground mb-4 text-6xl font-bold">404</h1>
+        <h2 className="text-foreground mb-4 text-2xl font-semibold">
           Page Not Found
         </h2>
-        <p className="mb-8 text-muted-foreground">
-          Sorry, we couldn&apos;t find the page you&apos;re looking for. It might have
-          been moved, deleted, or you entered the wrong URL.
+        <p className="text-muted-foreground mb-8">
+          Sorry, we couldn&apos;t find the page you&apos;re looking for. It
+          might have been moved, deleted, or you entered the wrong URL.
         </p>
         <div className="space-x-4">
           <Button asChild>
@@ -39,4 +40,4 @@ export default function NotFound() {
       </div>
     </div>
   )
-} 
+}

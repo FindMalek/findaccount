@@ -124,11 +124,35 @@ export async function createSecret(data: SecretDto): Promise<{
   issues?: z.ZodIssue[]
 }> {
   try {
+    console.log("Starting secret creation with data:", { 
+      name: data.name,
+      containerId: data.containerId,
+      hasValueEncryption: !!data.valueEncryption,
+      metadataCount: data.metadata?.length
+    })
+    
     const session = await verifySession()
-    const validatedData = secretDtoSchema.parse(data)
+    console.log("Session verified for user:", session.user.id)
+    
+    let validatedData: SecretDto
+    try {
+      validatedData = secretDtoSchema.parse(data)
+      console.log("Data validated successfully")
+    } catch (validationError) {
+      console.error("Validation error:", validationError)
+      if (validationError instanceof z.ZodError) {
+        return {
+          success: false,
+          error: "Validation failed",
+          issues: validationError.issues,
+        }
+      }
+      throw validationError
+    }
 
     // Validate container type if containerId is provided
     if (validatedData.containerId) {
+      console.log("Checking container:", validatedData.containerId)
       const container = await database.container.findFirst({
         where: {
           id: validatedData.containerId,
@@ -137,60 +161,97 @@ export async function createSecret(data: SecretDto): Promise<{
       })
 
       if (!container) {
+        console.log("Container not found")
         return {
           success: false,
           error: "Container not found",
         }
       }
 
-      if (
-        !ContainerEntity.validateEntityForContainer(
-          container.type,
-          EntityTypeEnum.SECRET
-        )
-      ) {
+      console.log("Container found:", {
+        id: container.id,
+        type: container.type,
+        name: container.name
+      })
+
+      const isValid = ContainerEntity.validateEntityForContainer(
+        container.type,
+        EntityTypeEnum.SECRET
+      )
+      console.log("Container validation result:", isValid)
+
+      if (!isValid) {
+        console.log("Container type validation failed")
         return {
           success: false,
           error: `Cannot add secrets to ${container.type.toLowerCase().replace("_", " ")} container`,
         }
       }
+    } else {
+      console.log("No container ID provided")
+      return {
+        success: false,
+        error: "Container ID is required",
+      }
     }
 
     // Create encrypted data for secret value
-    const valueEncryptionResult = await createEncryptedData({
-      encryptedValue: validatedData.valueEncryption.encryptedValue,
-      encryptionKey: validatedData.valueEncryption.encryptionKey,
-      iv: validatedData.valueEncryption.iv,
-    })
+    console.log("Creating encrypted data")
+    let valueEncryptionResult
+    try {
+      valueEncryptionResult = await createEncryptedData({
+        encryptedValue: validatedData.valueEncryption.encryptedValue,
+        encryptionKey: validatedData.valueEncryption.encryptionKey,
+        iv: validatedData.valueEncryption.iv,
+      })
 
-    if (
-      !valueEncryptionResult.success ||
-      !valueEncryptionResult.encryptedData
-    ) {
+      if (!valueEncryptionResult.success || !valueEncryptionResult.encryptedData) {
+        console.log("Encryption failed:", valueEncryptionResult)
+        return {
+          success: false,
+          error: "Failed to encrypt secret value",
+        }
+      }
+
+      console.log("Encryption successful")
+    } catch (encryptionError) {
+      console.error("Encryption error:", encryptionError)
       return {
         success: false,
         error: "Failed to encrypt secret value",
       }
     }
 
-    const secret = await database.secret.create({
-      data: {
-        name: validatedData.name,
-        valueEncryptionId: valueEncryptionResult.encryptedData.id,
-        userId: session.user.id,
-        containerId: validatedData.containerId,
-        note: validatedData.note,
-      },
-      include: {
-        valueEncryption: true,
-      },
-    })
+    console.log("Creating secret in database")
+    try {
+      const secret = await database.secret.create({
+        data: {
+          name: validatedData.name,
+          valueEncryptionId: valueEncryptionResult.encryptedData.id,
+          userId: session.user.id,
+          containerId: validatedData.containerId,
+          note: validatedData.note,
+        },
+        include: {
+          valueEncryption: true,
+        },
+      })
 
-    return {
-      success: true,
-      secret: SecretEntity.getSimpleRo(secret),
+      console.log("Secret created successfully")
+      return {
+        success: true,
+        secret: SecretEntity.getSimpleRo(secret),
+      }
+    } catch (dbError) {
+      console.error("Database error:", dbError)
+      return {
+        success: false,
+        error: "Failed to create secret in database",
+      }
     }
   } catch (error) {
+    console.error("Secret creation error details:", error)
+    
     if (error instanceof Error && error.message === "Not authenticated") {
       return {
         success: false,
@@ -198,6 +259,7 @@ export async function createSecret(data: SecretDto): Promise<{
       }
     }
     if (error instanceof z.ZodError) {
+      console.log("Validation error:", error.issues)
       return {
         success: false,
         error: "Validation failed",

@@ -33,7 +33,6 @@ export function DashboardAddCardDialog({
 
   const [createMore, setCreateMore] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
-
   const [sensitiveData, setSensitiveData] = useState({
     number: "",
     cvv: "",
@@ -69,16 +68,6 @@ export function DashboardAddCardDialog({
     try {
       setIsSubmitting(true)
 
-      const cardData = form.getValues()
-
-      // Validate form
-      const isValid = await form.trigger()
-      if (!isValid) {
-        toast("Please fill in all required fields", "error")
-        return
-      }
-
-      // Validate sensitive data
       if (!sensitiveData.number.trim()) {
         toast("Card number is required", "error")
         return
@@ -89,13 +78,30 @@ export function DashboardAddCardDialog({
         return
       }
 
-      // Encrypt sensitive data
       const key = await generateEncryptionKey()
       const encryptCvvResult = await encryptData(sensitiveData.cvv, key)
       const encryptNumberResult = await encryptData(sensitiveData.number, key)
       const keyString = await exportKey(key as CryptoKey)
 
-      // Update the form data with encrypted values
+      form.setValue("numberEncryption", {
+        encryptedValue: encryptNumberResult.encryptedData,
+        iv: encryptNumberResult.iv,
+        encryptionKey: keyString,
+      })
+      form.setValue("cvvEncryption", {
+        encryptedValue: encryptCvvResult.encryptedData,
+        iv: encryptCvvResult.iv,
+        encryptionKey: keyString,
+      })
+
+      const isValid = await form.trigger()
+      if (!isValid) {
+        toast("Please fill in all required fields", "error")
+        return
+      }
+
+      const cardData = form.getValues()
+
       const cardDataWithEncryption: CardDto = {
         ...cardData,
         numberEncryption: {
@@ -203,7 +209,6 @@ export function DashboardAddCardDialog({
           <DashboardAddCardForm
             form={form}
             availableTags={availableTags}
-            sensitiveData={sensitiveData}
             setSensitiveData={setSensitiveData}
           />
         </form>

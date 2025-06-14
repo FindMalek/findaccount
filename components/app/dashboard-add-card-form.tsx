@@ -43,10 +43,6 @@ import {
 interface CardFormProps {
   form: UseFormReturn<CardDto>
   availableTags: TagDto[]
-  sensitiveData: {
-    number: string
-    cvv: string
-  }
   setSensitiveData: React.Dispatch<
     React.SetStateAction<{
       number: string
@@ -58,7 +54,6 @@ interface CardFormProps {
 export function DashboardAddCardForm({
   form,
   availableTags,
-  sensitiveData,
   setSensitiveData,
 }: CardFormProps) {
   const [showMetadata, setShowMetadata] = useState(false)
@@ -138,23 +133,7 @@ export function DashboardAddCardForm({
             form.setValue("provider", cardType)
           }}
         />
-        {/* Display form errors for card fields */}
-        <div className="space-y-1">
-          {!sensitiveData.number.trim() && (
-            <p className="text-destructive text-sm">Card number is required</p>
-          )}
-          {form.formState.errors.expiryDate && (
-            <p className="text-destructive text-sm">
-              {String(
-                form.formState.errors.expiryDate.message ||
-                  form.formState.errors.expiryDate
-              )}
-            </p>
-          )}
-          {!sensitiveData.cvv.trim() && (
-            <p className="text-destructive text-sm">CVV is required</p>
-          )}
-        </div>
+        <FormMessage />
       </div>
 
       <div className="flex flex-col gap-3 sm:flex-row">

@@ -50,12 +50,12 @@ export function DashboardAddCredentialDialog({
 
   const [createMore, setCreateMore] = useState(false)
   const [showMetadata, setShowMetadata] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [passwordStrength, setPasswordStrength] = useState<{
     score: number
     feedback: string
   } | null>(null)
 
-  // Temporary state for sensitive data before encryption
   const [sensitiveData, setSensitiveData] = useState({
     identifier: "",
     password: "",
@@ -94,8 +94,6 @@ export function DashboardAddCredentialDialog({
     },
   })
 
-  const [isSubmitting, setIsSubmitting] = useState(false)
-
   useEffect(() => {
     if (platformsError) {
       toast(platformsError, "error")
@@ -120,7 +118,6 @@ export function DashboardAddCredentialDialog({
     copy(sensitiveData.password)
   }
 
-  // Check if metadata form has any meaningful values
   const hasMetadataValues = () => {
     const values = metadataForm.getValues()
     return (
@@ -131,7 +128,6 @@ export function DashboardAddCredentialDialog({
     )
   }
 
-  // Get labels for metadata fields that have values
   const getMetadataLabelsForCredential = () => {
     const values = metadataForm.getValues()
     const fieldMappings = {
@@ -147,14 +143,6 @@ export function DashboardAddCredentialDialog({
     try {
       setIsSubmitting(true)
 
-      // Validate credential form first
-      const credentialValid = await credentialForm.trigger()
-      if (!credentialValid) {
-        toast("Please fill in all required credential fields", "error")
-        return
-      }
-
-      // Validate sensitive data
       if (!sensitiveData.identifier.trim()) {
         toast("Identifier is required", "error")
         return
@@ -165,7 +153,23 @@ export function DashboardAddCredentialDialog({
         return
       }
 
-      // If metadata has values, validate it regardless of whether it's shown
+      const key = await generateEncryptionKey()
+      const encryptResult = await encryptData(sensitiveData.password, key)
+      const keyString = await exportKey(key as CryptoKey)
+
+      credentialForm.setValue("identifier", sensitiveData.identifier)
+      credentialForm.setValue("passwordEncryption", {
+        encryptedValue: encryptResult.encryptedData,
+        iv: encryptResult.iv,
+        encryptionKey: keyString,
+      })
+
+      const credentialValid = await credentialForm.trigger()
+      if (!credentialValid) {
+        toast("Please fill in all required credential fields", "error")
+        return
+      }
+
       if (hasMetadataValues()) {
         const metadataValid = await metadataForm.trigger()
         if (!metadataValid) {
@@ -175,11 +179,6 @@ export function DashboardAddCredentialDialog({
       }
 
       const credentialData = credentialForm.getValues()
-
-      // Encrypt password
-      const key = await generateEncryptionKey()
-      const encryptResult = await encryptData(sensitiveData.password, key)
-      const keyString = await exportKey(key as CryptoKey)
 
       const credentialDto: CredentialDto = {
         identifier: sensitiveData.identifier,
