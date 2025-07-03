@@ -31,21 +31,21 @@ export function AddItemDropdown({ text, className }: AddItemDropdownProps) {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button className={cn("w-full justify-start gap-2", className)}>
-            <Icons.add className="h-4 w-4" />
+            <Icons.add className="size-4" />
             {text}
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-[200px]">
           <DropdownMenuItem onClick={() => setAccountDialogOpen(true)}>
-            <Icons.user className="mr-2 h-4 w-4" />
+            <Icons.user className="mr-2 size-4" />
             <span>New Account</span>
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setCardDialogOpen(true)}>
-            <Icons.creditCard className="mr-2 h-4 w-4" />
+            <Icons.creditCard className="mr-2 size-4" />
             <span>New Payment Card</span>
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setSecretDialogOpen(true)}>
-            <Icons.key className="mr-2 h-4 w-4" />
+            <Icons.key className="mr-2 size-4" />
             <span>New Secure Note</span>
           </DropdownMenuItem>
         </DropdownMenuContent>

@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import { RecentItem } from "@/schemas/utils"
 
 import {
@@ -12,7 +13,7 @@ import { formatDate, formatFullDate } from "@/lib/utils"
 import { AddItemDropdown } from "@/components/shared/add-item-dropdown"
 import { getEntityIcon, Icons } from "@/components/shared/icons"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 import {
   Card,
   CardContent,
@@ -48,7 +49,7 @@ export function DashboardRecentActivity({
               >
                 <div className="flex items-center space-x-4">
                   <div
-                    className={`flex h-8 w-8 items-center justify-center rounded-full`}
+                    className={`flex size-8 items-center justify-center rounded-full`}
                   >
                     {getEntityIcon(item.type)}
                   </div>
@@ -69,7 +70,7 @@ export function DashboardRecentActivity({
                   <Button variant="ghost" size="icon">
                     <Tooltip>
                       <TooltipTrigger>
-                        <Icons.info className="text-muted-foreground h-4 w-4" />
+                        <Icons.info className="text-muted-foreground size-4" />
                       </TooltipTrigger>
                       <TooltipContent>
                         <span className="cursor-default">
@@ -86,7 +87,7 @@ export function DashboardRecentActivity({
         ) : (
           <div className="flex flex-col items-center justify-center py-8 text-center">
             <div className="bg-muted rounded-full p-3">
-              <Icons.logo className="text-muted-foreground h-6 w-6" />
+              <Icons.logo className="text-muted-foreground size-6" />
             </div>
             <h3 className="mt-4 text-lg font-semibold">No items yet</h3>
             <p className="text-muted-foreground mt-2 text-sm">
@@ -101,9 +102,15 @@ export function DashboardRecentActivity({
 
       {recentItems.length > 0 && (
         <CardFooter>
-          <Button variant="outline" className="w-full" disabled>
-            View all activity (coming soon)
-          </Button>
+          <Link
+            href="/dashboard/logs"
+            className={buttonVariants({
+              variant: "outline",
+              className: "w-full",
+            })}
+          >
+            View all activity
+          </Link>
         </CardFooter>
       )}
     </Card>

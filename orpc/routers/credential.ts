@@ -1,4 +1,7 @@
-import { CredentialEntity } from "@/entities/credential/credential"
+import {
+  CredentialEntity,
+  CredentialQuery,
+} from "@/entities/credential/credential"
 import { authMiddleware } from "@/middleware/auth"
 import { database } from "@/prisma/client"
 import {
@@ -22,6 +25,7 @@ import { ORPCError, os } from "@orpc/server"
 import type { Prisma } from "@prisma/client"
 import { z } from "zod"
 
+import { decryptData } from "@/lib/encryption"
 import { getOrReturnEmptyObject } from "@/lib/utils"
 import { createEncryptedData } from "@/lib/utils/encryption-helpers"
 import { createTagsAndGetConnections } from "@/lib/utils/tag-helpers"
@@ -58,6 +62,54 @@ export const getCredential = authProcedure
     return CredentialEntity.getSimpleRo(credential)
   })
 
+// Get credential password (decrypted on server for security)
+export const getCredentialPassword = authProcedure
+  .input(getCredentialInputSchema)
+  .output(z.object({ password: z.string() }))
+  .handler(async ({ input, context }): Promise<{ password: string }> => {
+    const credential = await database.credential.findFirst({
+      where: {
+        id: input.id,
+        userId: context.user.id,
+      },
+      include: {
+        passwordEncryption: true,
+      },
+    })
+
+    if (!credential) {
+      throw new ORPCError("NOT_FOUND")
+    }
+
+    if (!credential.passwordEncryption) {
+      throw new ORPCError("NOT_FOUND", {
+        message: "Password encryption data not found",
+      })
+    }
+
+    try {
+      // Decrypt password on server for security
+      const decryptedPassword = await decryptData(
+        credential.passwordEncryption.encryptedValue,
+        credential.passwordEncryption.iv,
+        credential.passwordEncryption.encryptionKey
+      )
+
+      // Update last viewed timestamp
+      await database.credential.update({
+        where: { id: input.id },
+        data: { lastViewed: new Date() },
+      })
+
+      return { password: decryptedPassword }
+    } catch (error) {
+      console.error("Failed to decrypt password:", error)
+      throw new ORPCError("INTERNAL_SERVER_ERROR", {
+        message: "Failed to decrypt password",
+      })
+    }
+  })
+
 // List credentials with pagination
 export const listCredentials = authProcedure
   .input(listCredentialsInputSchema)
@@ -84,13 +136,14 @@ export const listCredentials = authProcedure
         skip,
         take: limit,
         orderBy: { createdAt: "desc" },
+        include: { ...CredentialQuery.getInclude() },
       }),
       database.credential.count({ where }),
     ])
 
     return {
       credentials: credentials.map((credential) =>
-        CredentialEntity.getSimpleRo(credential)
+        CredentialEntity.getRo(credential)
       ),
       total,
       hasMore: skip + credentials.length < total,
@@ -111,6 +164,22 @@ export const createCredential = authProcedure
 
     if (!platform) {
       throw new ORPCError("NOT_FOUND")
+    }
+
+    // Check if credential with same identifier already exists for this platform and user
+    const existingCredential = await database.credential.findFirst({
+      where: {
+        identifier: input.identifier,
+        platformId: input.platformId,
+        userId: context.user.id,
+      },
+    })
+
+    if (existingCredential) {
+      throw new ORPCError("CONFLICT", {
+        message:
+          "A credential with this identifier already exists for this platform",
+      })
     }
 
     const tagConnections = await createTagsAndGetConnections(
@@ -166,6 +235,33 @@ export const updateCredential = authProcedure
 
     if (!existingCredential) {
       throw new ORPCError("NOT_FOUND")
+    }
+
+    // Check for duplicate identifier if identifier or platformId is being updated
+    if (
+      updateData.identifier !== undefined ||
+      updateData.platformId !== undefined
+    ) {
+      const newIdentifier =
+        updateData.identifier ?? existingCredential.identifier
+      const newPlatformId =
+        updateData.platformId ?? existingCredential.platformId
+
+      const duplicateCredential = await database.credential.findFirst({
+        where: {
+          identifier: newIdentifier,
+          platformId: newPlatformId,
+          userId: context.user.id,
+          NOT: { id }, // Exclude current credential
+        },
+      })
+
+      if (duplicateCredential) {
+        throw new ORPCError("CONFLICT", {
+          message:
+            "A credential with this identifier already exists for this platform",
+        })
+      }
     }
 
     // Process the update data
@@ -265,6 +361,22 @@ export const createCredentialWithMetadata = authProcedure
           throw new ORPCError("NOT_FOUND")
         }
 
+        // Check if credential with same identifier already exists for this platform and user
+        const existingCredential = await database.credential.findFirst({
+          where: {
+            identifier: credentialData.identifier,
+            platformId: credentialData.platformId,
+            userId: context.user.id,
+          },
+        })
+
+        if (existingCredential) {
+          throw new ORPCError("CONFLICT", {
+            message:
+              "A credential with this identifier already exists for this platform",
+          })
+        }
+
         const tagConnections = await createTagsAndGetConnections(
           credentialData.tags,
           context.user.id,
@@ -305,15 +417,45 @@ export const createCredentialWithMetadata = authProcedure
 
           // Create metadata if provided
           if (metadata) {
-            await tx.credentialMetadata.create({
+            const credentialMetadata = await tx.credentialMetadata.create({
               data: {
                 credentialId: credential.id,
                 recoveryEmail: metadata.recoveryEmail,
                 phoneNumber: metadata.phoneNumber,
-                otherInfo: metadata.otherInfo || [],
                 has2FA: metadata.has2FA || false,
               },
             })
+
+            // Create encrypted key-value pairs if provided
+            if (metadata.keyValuePairs && metadata.keyValuePairs.length > 0) {
+              for (const kvPair of metadata.keyValuePairs) {
+                // Create encrypted data for the value
+                const valueEncryptionResult = await createEncryptedData({
+                  encryptedValue: kvPair.valueEncryption.encryptedValue,
+                  encryptionKey: kvPair.valueEncryption.encryptionKey,
+                  iv: kvPair.valueEncryption.iv,
+                })
+
+                if (
+                  !valueEncryptionResult.success ||
+                  !valueEncryptionResult.encryptedData
+                ) {
+                  throw new ORPCError("INTERNAL_SERVER_ERROR", {
+                    message:
+                      "Failed to create encrypted data for key-value pair",
+                  })
+                }
+
+                // Create the key-value pair
+                await tx.credentialKeyValuePair.create({
+                  data: {
+                    key: kvPair.key,
+                    valueEncryptionId: valueEncryptionResult.encryptedData.id,
+                    credentialMetadataId: credentialMetadata.id,
+                  },
+                })
+              }
+            }
           }
 
           return credential
@@ -343,6 +485,7 @@ export const createCredentialWithMetadata = authProcedure
 // Export the credential router
 export const credentialRouter = {
   get: getCredential,
+  getPassword: getCredentialPassword,
   list: listCredentials,
   create: createCredential,
   createWithMetadata: createCredentialWithMetadata,

@@ -6,9 +6,15 @@ import type {
   CredentialOutput,
   DeleteCredentialInput,
   ListCredentialsInput,
+  ListCredentialsOutput,
   UpdateCredentialInput,
 } from "@/schemas/credential/dto"
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  type UseQueryOptions,
+} from "@tanstack/react-query"
 
 // Query keys factory
 export const credentialKeys = {
@@ -21,22 +27,39 @@ export const credentialKeys = {
 }
 
 // Get single credential
-export function useCredential(id: string) {
+export function useCredential(
+  id: string,
+  options?: Omit<UseQueryOptions<CredentialOutput>, "queryKey" | "queryFn">
+) {
   return useQuery({
     queryKey: credentialKeys.detail(id),
     queryFn: () => orpc.credentials.get.call({ id }),
     enabled: !!id,
+    ...options,
+  })
+}
+
+// Get credential password (decrypted server-side)
+export function useCredentialPassword(id: string, enabled: boolean = false) {
+  return useQuery({
+    queryKey: [...credentialKeys.detail(id), "password"],
+    queryFn: () => orpc.credentials.getPassword.call({ id }),
+    enabled: !!id && enabled,
+    staleTime: 0, // Always fetch fresh for security
+    gcTime: 0, // Don't cache passwords
   })
 }
 
 // List credentials with pagination
 export function useCredentials(
-  input: ListCredentialsInput = { page: 1, limit: 10 }
+  input: ListCredentialsInput = { page: 1, limit: 10 },
+  options?: Omit<UseQueryOptions<ListCredentialsOutput>, "queryKey" | "queryFn">
 ) {
   return useQuery({
     queryKey: credentialKeys.list(input),
     queryFn: () => orpc.credentials.list.call(input),
     placeholderData: (previousData) => previousData,
+    ...options,
   })
 }
 

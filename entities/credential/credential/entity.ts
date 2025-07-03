@@ -1,11 +1,16 @@
+import { TagEntity } from "@/entities/utils"
 import {
   accountStatusEnum,
   AccountStatusInfer,
+  CredentialIncludeRo,
   CredentialSimpleRo,
 } from "@/schemas/credential"
 import { AccountStatus } from "@prisma/client"
 
-import { CredentialEntitySimpleDbData } from "./query"
+import {
+  CredentialEntityIncludeDbData,
+  CredentialEntitySimpleDbData,
+} from "./query"
 
 export class CredentialEntity {
   static getSimpleRo(entity: CredentialEntitySimpleDbData): CredentialSimpleRo {
@@ -25,6 +30,13 @@ export class CredentialEntity {
       containerId: entity.containerId,
 
       passwordEncryptionId: entity.passwordEncryptionId,
+    }
+  }
+
+  static getRo(entity: CredentialEntityIncludeDbData): CredentialIncludeRo {
+    return {
+      ...this.getSimpleRo(entity),
+      tags: entity.tags.map((tag) => TagEntity.getSimpleRo(tag)),
     }
   }
 

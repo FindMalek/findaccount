@@ -1,13 +1,13 @@
 import { z } from "zod"
 
+import { credentialKeyValuePairDtoSchema } from "./credential-key-value"
+
 export const credentialMetadataDtoSchema = z.object({
   recoveryEmail: z.string().email().optional(),
   phoneNumber: z.string().optional(),
   has2FA: z.boolean(),
 
-  otherInfo: z.array(z.any()).optional(),
-
-  credentialId: z.string(),
+  keyValuePairs: z.array(credentialKeyValuePairDtoSchema).optional(),
 })
 
 export type CredentialMetadataDto = z.infer<typeof credentialMetadataDtoSchema>
@@ -18,8 +18,6 @@ export const credentialMetadataSimpleRoSchema = z.object({
   recoveryEmail: z.string().nullable(),
   phoneNumber: z.string().nullable(),
   has2FA: z.boolean(),
-
-  otherInfo: z.array(z.any()).nullable(),
 
   credentialId: z.string(),
 })

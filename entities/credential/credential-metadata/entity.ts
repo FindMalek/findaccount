@@ -13,8 +13,6 @@ export class CredentialMetadataEntity {
       phoneNumber: entity.phoneNumber,
       has2FA: entity.has2FA,
 
-      otherInfo: Array.isArray(entity.otherInfo) ? entity.otherInfo : null,
-
       credentialId: entity.credentialId,
     }
   }

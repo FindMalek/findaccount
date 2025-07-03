@@ -9,21 +9,22 @@ export function PasswordStrengthMeter({
   score,
   className,
 }: PasswordStrengthMeterProps) {
-  const levels = 4
+  const levels = 5
   const colors = [
-    "rgb(239, 68, 68)", // red-500
-    "rgb(249, 115, 22)", // orange-500
-    "rgb(234, 179, 8)", // yellow-500
-    "rgb(34, 197, 94)", // green-500
+    "rgb(239, 68, 68)",
+    "rgb(249, 115, 22)",
+    "rgb(234, 179, 8)",
+    "rgb(34, 197, 94)",
+    "rgb(34, 197, 94)",
   ]
 
   return (
-    <div className={cn("flex gap-1", className)}>
+    <div className={cn("flex gap-0.5", className)}>
       {[...Array(levels)].map((_, i) => (
         <div
           key={i}
           className={cn(
-            "h-2 flex-1 rounded-full transition-all",
+            "h-1 flex-1 rounded-full transition-all",
             i < score ? "bg-current" : "bg-muted"
           )}
           style={{

@@ -8,13 +8,13 @@ export default function RegisterLoading() {
       <div className="w-full max-w-sm">
         <div className="mb-4 flex flex-col items-center gap-2">
           <div className="flex flex-col items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-md">
+            <div className="flex size-8 items-center justify-center rounded-md">
               <Skeleton className="size-6" />
             </div>
             <span className="sr-only">{siteConfig.name}</span>
           </div>
           <Skeleton className="h-7 w-48" />
-          <Skeleton className="h-4 w-40" />
+          <Skeleton className="size-40" />
         </div>
 
         <div className="space-y-4">
@@ -25,7 +25,7 @@ export default function RegisterLoading() {
         </div>
 
         <div className="mt-4 flex justify-center gap-1 text-xs">
-          <Skeleton className="h-3 w-32" />
+          <Skeleton className="size-32" />
         </div>
       </div>
     </div>

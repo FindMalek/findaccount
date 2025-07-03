@@ -36,7 +36,7 @@ export function CardStatusIndicator({
 
   return (
     <div className={cn("flex items-center gap-2", className)}>
-      <div className={cn("h-2 w-2 rounded-full", statusColor)} />
+      <div className={cn("size-2 rounded-full", statusColor)} />
       {showText && <span>{statusText}</span>}
     </div>
   )

@@ -21,7 +21,10 @@ import { KeyValuePair, User as UserType } from "@/types"
 
 import { PRIORITY_ACTIVITY_TYPE } from "@/config/consts"
 
+import { getRelativeTime } from "../date-utils"
+
 export * from "./card-expiry-helpers"
+export * from "./color-helpers"
 export * from "./password-helpers"
 
 export function cn(...inputs: ClassValue[]) {
@@ -354,4 +357,16 @@ export function parseKeyValuePairs(text: string): KeyValuePair[] {
       }
     })
     .filter((pair) => pair.key && pair.value)
+}
+
+export function getCreatedOrLastViewedText(
+  date: Date | null,
+  lastViewed: boolean
+) {
+  if (!date) return `Created recently at ${formatDate(new Date())}`
+
+  if (!lastViewed)
+    return `Created ${getRelativeTime(date).toLowerCase()} at ${formatDate(date)}`
+
+  return `Last seen ${getRelativeTime(date).toLowerCase()} on ${formatDate(date)}`
 }

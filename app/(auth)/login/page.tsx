@@ -21,7 +21,7 @@ export default function LoginPage() {
         asChild
       >
         <Link href="/">
-          <Icons.chevronLeft className="h-5 w-5 transition-all duration-300 hover:pr-2" />
+          <Icons.chevronLeft className="size-4 transition-all duration-300 hover:pr-2" />
           <span>Back</span>
         </Link>
       </Button>
@@ -31,7 +31,7 @@ export default function LoginPage() {
             href="/"
             className="flex flex-col items-center gap-2 font-medium"
           >
-            <div className="flex h-8 w-8 items-center justify-center rounded-md">
+            <div className="flex size-8 items-center justify-center rounded-md">
               <Icons.logo className="size-6" />
             </div>
             <span className="sr-only">{siteConfig.name}</span>

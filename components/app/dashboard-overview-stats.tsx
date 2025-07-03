@@ -18,7 +18,7 @@ export function OverviewStats({ stats }: OverviewStatsProps) {
         title="Total Accounts"
         value={stats.credentials}
         icon={
-          <Icons.user className="text-muted-foreground group-hover:text-primary h-4 w-4 transition-colors" />
+          <Icons.user className="text-muted-foreground group-hover:text-primary size-4 transition-colors" />
         }
         description="Total number of accounts"
       />
@@ -26,7 +26,7 @@ export function OverviewStats({ stats }: OverviewStatsProps) {
         title="Total Payment Cards"
         value={stats.cards}
         icon={
-          <Icons.creditCard className="text-muted-foreground group-hover:text-primary h-4 w-4 transition-colors" />
+          <Icons.creditCard className="text-muted-foreground group-hover:text-primary size-4 transition-colors" />
         }
         description="Total number of payment cards"
       />
@@ -34,7 +34,7 @@ export function OverviewStats({ stats }: OverviewStatsProps) {
         title="Total Secure Notes"
         value={stats.secrets}
         icon={
-          <Icons.key className="text-muted-foreground group-hover:text-primary h-4 w-4 transition-colors" />
+          <Icons.key className="text-muted-foreground group-hover:text-primary size-4 transition-colors" />
         }
         description="Total number of secure notes"
       />

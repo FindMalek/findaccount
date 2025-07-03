@@ -279,12 +279,12 @@ export function DashboardAddSecretForm({
                     <Button
                       type="button"
                       variant="ghost"
-                      size="sm"
+                      size="icon"
                       onClick={() => removeKeyValuePair(pair.id)}
                       title="Remove this key-value pair"
-                      className="text-muted-foreground hover:text-destructive h-9 w-9 flex-shrink-0 p-0"
+                      className="text-muted-foreground hover:text-destructive flex flex-shrink-0 items-center justify-center"
                     >
-                      <Icons.close className="h-4 w-4" />
+                      <Icons.trash className="size-4" />
                     </Button>
                   </div>
                 )}
@@ -299,7 +299,7 @@ export function DashboardAddSecretForm({
                 onClick={addKeyValuePair}
                 className="text-muted-foreground hover:text-foreground flex w-full items-center gap-2"
               >
-                <Icons.add className="h-4 w-4" />
+                <Icons.add className="size-4" />
                 Add Another
               </Button>
             </div>

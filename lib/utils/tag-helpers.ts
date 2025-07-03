@@ -2,6 +2,8 @@ import { database } from "@/prisma/client"
 import type { TagDto } from "@/schemas/utils/tag"
 import type { Prisma, Tag } from "@prisma/client"
 
+import { generateTagColor } from "./color-helpers"
+
 export async function createTagsAndGetConnections(
   tags: TagDto[],
   userId: string,
@@ -26,7 +28,7 @@ export async function createTagsAndGetConnections(
   if (tagsToCreate.length > 0) {
     const createData = tagsToCreate.map((tag) => ({
       name: tag.name,
-      color: tag.color,
+      color: tag.color ?? generateTagColor(tag.name, "pastel"),
       userId,
       containerId: containerId || null,
     }))

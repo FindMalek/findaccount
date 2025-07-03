@@ -1,5 +1,4 @@
 import type { Metadata } from "next"
-import Image from "next/image"
 import Link from "next/link"
 
 import { notFoundMetadata } from "@/config/site"
@@ -12,15 +11,6 @@ export default function NotFound() {
   return (
     <div className="bg-background flex min-h-screen flex-col items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-md text-center">
-        <div className="relative mx-auto mb-8 h-64 w-64">
-          <Image
-            src="/not-found.png"
-            alt="Page not found"
-            fill
-            className="object-contain"
-            priority
-          />
-        </div>
         <h1 className="text-foreground mb-4 text-6xl font-bold">404</h1>
         <h2 className="text-foreground mb-4 text-2xl font-semibold">
           Page Not Found

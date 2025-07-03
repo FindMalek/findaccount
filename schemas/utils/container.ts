@@ -9,7 +9,7 @@ export const containerDtoSchema = z.object({
 
   description: z.string().optional(),
 
-  type: z.nativeEnum(ContainerType).default(ContainerType.MIXED),
+  type: z.nativeEnum(ContainerType),
   tags: z.array(tagDtoSchema),
 })
 
@@ -49,3 +49,8 @@ export const deleteContainerDtoSchema = z.object({
 })
 
 export type DeleteContainerDto = z.infer<typeof deleteContainerDtoSchema>
+
+export const containerTypeSchema = z.nativeEnum(ContainerType)
+export const containerTypeEnum = containerTypeSchema.enum
+export type ContainerTypeInfer = z.infer<typeof containerTypeSchema>
+export const LIST_CONTAINER_TYPES = Object.values(containerTypeEnum)

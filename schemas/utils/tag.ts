@@ -12,7 +12,7 @@ export const tagSimpleRoSchema = z.object({
   id: z.string(),
   name: z.string(),
 
-  color: z.string().nullable(),
+  color: z.string(),
 
   userId: z.string().nullable(),
   containerId: z.string().nullable(),

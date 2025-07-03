@@ -9,7 +9,12 @@ import type {
   ListCardsOutput,
   UpdateCardInput,
 } from "@/schemas/card/dto"
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  type UseQueryOptions,
+} from "@tanstack/react-query"
 
 // Query keys factory
 export const cardKeys = {
@@ -31,11 +36,15 @@ export function useCard(id: string) {
 }
 
 // List cards with pagination
-export function useCards(input: ListCardsInput = { page: 1, limit: 10 }) {
+export function useCards(
+  input: ListCardsInput = { page: 1, limit: 10 },
+  options?: Omit<UseQueryOptions<ListCardsOutput>, "queryKey" | "queryFn">
+) {
   return useQuery({
     queryKey: cardKeys.list(input),
     queryFn: () => orpc.cards.list.call(input),
     placeholderData: (previousData) => previousData,
+    ...options,
   })
 }
 

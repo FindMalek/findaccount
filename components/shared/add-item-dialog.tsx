@@ -93,7 +93,7 @@ export function AddItemDialog({
                   className="w-full sm:w-auto"
                 >
                   {isSubmitting && (
-                    <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+                    <Icons.spinner className="mr-2 size-4 animate-spin" />
                   )}
                   {submitText}
                 </Button>

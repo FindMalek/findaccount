@@ -5,10 +5,16 @@ import type {
   CreateSecretInput,
   DeleteSecretInput,
   ListSecretsInput,
+  ListSecretsOutput,
   SecretOutput,
   UpdateSecretInput,
 } from "@/schemas/secrets/dto"
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  type UseQueryOptions,
+} from "@tanstack/react-query"
 
 // Query keys factory
 export const secretKeys = {
@@ -30,11 +36,15 @@ export function useSecret(id: string) {
 }
 
 // List secrets with pagination
-export function useSecrets(input: ListSecretsInput = { page: 1, limit: 10 }) {
+export function useSecrets(
+  input: ListSecretsInput = { page: 1, limit: 10 },
+  options?: Omit<UseQueryOptions<ListSecretsOutput>, "queryKey" | "queryFn">
+) {
   return useQuery({
     queryKey: secretKeys.list(input),
     queryFn: () => orpc.secrets.list.call(input),
     placeholderData: (previousData) => previousData,
+    ...options,
   })
 }
 

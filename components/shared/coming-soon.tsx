@@ -55,22 +55,22 @@ export function ComingSoon({
     label: string
     icon: React.ReactNode
   }> = [
-    { id: "planned", label: "Planned", icon: <Pencil className="h-4 w-4" /> },
+    { id: "planned", label: "Planned", icon: <Pencil className="size-4" /> },
     {
       id: "design",
       label: "Design Interface",
-      icon: <Pencil className="h-4 w-4" />,
+      icon: <Pencil className="size-4" />,
     },
     {
       id: "development",
       label: "Development",
-      icon: <Code className="h-4 w-4" />,
+      icon: <Code className="size-4" />,
     },
-    { id: "testing", label: "Testing", icon: <TestTube className="h-4 w-4" /> },
+    { id: "testing", label: "Testing", icon: <TestTube className="size-4" /> },
     {
       id: "production",
       label: "Production Ready",
-      icon: <Truck className="h-4 w-4" />,
+      icon: <Truck className="size-4" />,
     },
   ]
 
@@ -107,24 +107,24 @@ export function ComingSoon({
         <div className="order-1 flex justify-center md:order-2">
           <div className="relative flex aspect-square w-full max-w-[300px] items-center justify-center">
             {illustration === "construction" && (
-              <Construction className="text-primary h-32 w-32 animate-bounce" />
+              <Construction className="text-primary size-32 animate-bounce" />
             )}
 
             {illustration === "rocket" && (
               <div className="relative">
-                <div className="bg-primary/20 absolute -bottom-10 left-1/2 h-16 w-16 -translate-x-1/2 animate-pulse rounded-full blur-xl"></div>
-                <Rocket className="text-primary h-32 w-32 animate-[bounce_3s_ease-in-out_infinite]" />
+                <div className="bg-primary/20 absolute -bottom-10 left-1/2 size-16 -translate-x-1/2 animate-pulse rounded-full blur-xl"></div>
+                <Rocket className="text-primary size-32 animate-[bounce_3s_ease-in-out_infinite]" />
               </div>
             )}
 
             {illustration === "sparkles" && (
               <div className="relative">
-                <Sparkles className="text-primary h-32 w-32 animate-pulse" />
-                <div className="absolute left-0 top-0 h-full w-full">
+                <Sparkles className="text-primary size-32 animate-pulse" />
+                <div className="absolute left-0 top-0 size-full">
                   {[...Array(5)].map((_, i) => (
                     <span
                       key={i}
-                      className="bg-primary absolute block h-2 w-2 animate-ping rounded-full"
+                      className="bg-primary absolute block size-2 animate-ping rounded-full"
                       style={{
                         top: `${Math.random() * 100}%`,
                         left: `${Math.random() * 100}%`,
@@ -160,7 +160,7 @@ export function ComingSoon({
                       : "bg-muted"
                 )}
               >
-                {isCompleted ? <CheckCircle2 className="h-4 w-4" /> : s.icon}
+                {isCompleted ? <CheckCircle2 className="size-4" /> : s.icon}
                 {s.label}
               </div>
             )

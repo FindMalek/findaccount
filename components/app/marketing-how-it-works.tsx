@@ -13,7 +13,7 @@ export function MarketingHowItWorks() {
 
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-3 lg:gap-12">
           <div className="text-center">
-            <div className="bg-primary text-primary-foreground mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full text-lg font-bold sm:mb-6 sm:h-16 sm:w-16 sm:text-2xl">
+            <div className="bg-primary text-primary-foreground mx-auto mb-4 flex size-12 items-center justify-center rounded-full text-lg font-bold sm:mb-6 sm:h-16 sm:w-16 sm:text-2xl">
               1
             </div>
             <h3 className="mb-2 text-lg font-semibold sm:mb-3 sm:text-xl">
@@ -26,7 +26,7 @@ export function MarketingHowItWorks() {
           </div>
 
           <div className="text-center">
-            <div className="bg-primary text-primary-foreground mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full text-lg font-bold sm:mb-6 sm:h-16 sm:w-16 sm:text-2xl">
+            <div className="bg-primary text-primary-foreground mx-auto mb-4 flex size-12 items-center justify-center rounded-full text-lg font-bold sm:mb-6 sm:h-16 sm:w-16 sm:text-2xl">
               2
             </div>
             <h3 className="mb-2 text-lg font-semibold sm:mb-3 sm:text-xl">
@@ -39,7 +39,7 @@ export function MarketingHowItWorks() {
           </div>
 
           <div className="text-center sm:col-span-2 md:col-span-1">
-            <div className="bg-primary text-primary-foreground mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full text-lg font-bold sm:mb-6 sm:h-16 sm:w-16 sm:text-2xl">
+            <div className="bg-primary text-primary-foreground mx-auto mb-4 flex size-12 items-center justify-center rounded-full text-lg font-bold sm:mb-6 sm:h-16 sm:w-16 sm:text-2xl">
               3
             </div>
             <h3 className="mb-2 text-lg font-semibold sm:mb-3 sm:text-xl">

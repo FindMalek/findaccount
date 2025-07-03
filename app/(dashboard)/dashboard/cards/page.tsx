@@ -7,7 +7,7 @@ export default function CardsPage() {
       description="This page is coming soon."
       illustration="construction"
       estimatedTime="2 days"
-      stage="design"
+      stage="development"
     />
   )
 }

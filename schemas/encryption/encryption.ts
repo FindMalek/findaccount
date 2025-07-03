@@ -20,3 +20,14 @@ export const encryptedDataSimpleRoSchema = z.object({
 })
 
 export type EncryptedDataSimpleRo = z.infer<typeof encryptedDataSimpleRoSchema>
+
+// Generic encrypted key-value pair interface for reusable components
+export const genericEncryptedKeyValuePairDtoSchema = z.object({
+  id: z.string().optional(),
+  key: z.string().min(1, "Key is required"),
+  valueEncryption: encryptedDataDtoSchema,
+})
+
+export type GenericEncryptedKeyValuePairDto = z.infer<
+  typeof genericEncryptedKeyValuePairDtoSchema
+>

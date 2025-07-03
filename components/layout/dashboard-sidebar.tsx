@@ -14,6 +14,7 @@ import {
   SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
+  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
@@ -36,7 +37,7 @@ export function DashboardSidebar({ user, ...props }: DashboardSidebarProps) {
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
               <Link href="/">
-                <Icons.logo className="h-5 w-5" />
+                <Icons.logo className="size-5" />
                 <span className="text-base font-semibold">
                   {siteConfig.name}
                 </span>
@@ -50,32 +51,71 @@ export function DashboardSidebar({ user, ...props }: DashboardSidebarProps) {
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarSeparator />
-
               <DashboardSidebarMenuItemComponent
                 href="/dashboard"
-                icon={<Icons.home className="h-4 w-4" />}
+                icon={<Icons.home className="size-4" />}
                 label="Overview"
               />
 
               <SidebarSeparator />
+              <SidebarGroupLabel>
+                <span>Applications</span>
+              </SidebarGroupLabel>
 
               <DashboardSidebarMenuItemComponent
                 href="/dashboard/accounts"
-                icon={<Icons.user className="h-4 w-4" />}
+                icon={<Icons.user className="size-4" />}
                 label="Accounts"
               />
               <DashboardSidebarMenuItemComponent
                 href="/dashboard/cards"
-                icon={<Icons.creditCard className="h-4 w-4" />}
+                icon={<Icons.creditCard className="size-4" />}
                 label="Payment Cards"
               />
               <DashboardSidebarMenuItemComponent
                 href="/dashboard/secrets"
-                icon={<Icons.key className="h-4 w-4" />}
+                icon={<Icons.key className="size-4" />}
                 label="Secure Notes"
               />
 
               <SidebarSeparator />
+              <SidebarGroupLabel>
+                <span>Library</span>
+              </SidebarGroupLabel>
+
+              <DashboardSidebarMenuItemComponent
+                href="/dashboard/platforms"
+                icon={<Icons.platform className="size-4" />}
+                label="Platforms"
+              />
+              <DashboardSidebarMenuItemComponent
+                href="/dashboard/containers"
+                icon={<Icons.folder className="size-4" />}
+                label="Containers"
+              />
+
+              <DashboardSidebarMenuItemComponent
+                href="/dashboard/tags"
+                icon={<Icons.tag className="size-4" />}
+                label="Tags"
+              />
+
+              <SidebarSeparator />
+              <SidebarGroupLabel>
+                <span>Lifecycle</span>
+              </SidebarGroupLabel>
+
+              <DashboardSidebarMenuItemComponent
+                href="/dashboard/logs"
+                icon={<Icons.logs className="size-4" />}
+                label="Logs"
+              />
+
+              <DashboardSidebarMenuItemComponent
+                href="/dashboard/iv"
+                icon={<Icons.iv className="size-4" />}
+                label="Initialized Vectors"
+              />
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

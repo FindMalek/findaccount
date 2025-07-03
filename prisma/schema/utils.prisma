@@ -10,8 +10,8 @@ model Health {
  * Represents a platform where credentials and environment variables can be associated.
  * @property id - Unique identifier for the platform. Type: String. Generated using cuid().
  * @property name - Name of the platform. Type: String.
- * @property logo - Logo of the platform. Type: String. Optional.
- * @property description - Description of the platform. Type: String. Optional.
+ * @property logo - Logo of the platform. Type: String.
+ * @property loginUrl - Login URL of the platform. Type: String.
  * @property status - Status of the platform. Type: PlatformStatus. Defaults to PENDING.
  * @property createdAt - Timestamp when the platform was created. Type: DateTime. Defaults to current time.
  * @property updatedAt - Timestamp when the platform was last updated. Type: DateTime. Updated automatically.
@@ -22,8 +22,8 @@ model Platform {
   id String @id @default(cuid())
 
   name     String
-  logo     String?
-  loginUrl String?
+  logo     String
+  loginUrl String
 
   status PlatformStatus @default(PENDING)
 
@@ -52,7 +52,7 @@ model Tag {
   id String @id @default(cuid())
 
   name  String
-  color String?
+  color String
 
   cards       Card[]
   credentials Credential[]

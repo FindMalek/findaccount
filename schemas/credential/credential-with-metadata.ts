@@ -6,7 +6,7 @@ import { createCredentialInputSchema, credentialOutputSchema } from "./dto"
 // Schema for creating a credential with metadata
 export const createCredentialWithMetadataInputSchema = z.object({
   credential: createCredentialInputSchema,
-  metadata: credentialMetadataDtoSchema.omit({ credentialId: true }).optional(),
+  metadata: credentialMetadataDtoSchema.optional(),
 })
 
 export const createCredentialWithMetadataOutputSchema = z.object({

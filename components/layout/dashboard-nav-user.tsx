@@ -53,7 +53,7 @@ export function DashboardNavUser({ user }: DashboardNavUserProps) {
 
   const userAvatarContent = !trulyCollapsed ? (
     <>
-      <Avatar className="h-8 w-8 rounded-lg">
+      <Avatar className="size-8 rounded-lg">
         <AvatarImage src={getAvatarOrFallback(user)} alt={user.name} />
         <AvatarFallback className="rounded-lg">
           {user.name.charAt(0)}
@@ -68,7 +68,7 @@ export function DashboardNavUser({ user }: DashboardNavUserProps) {
       <Icons.more className="ml-auto size-4" />
     </>
   ) : (
-    <Avatar className="h-8 w-8 rounded-lg">
+    <Avatar className="size-8 rounded-lg">
       <AvatarImage src={getAvatarOrFallback(user)} alt={user.name} />
       <AvatarFallback className="rounded-lg">
         {user.name.charAt(0)}
@@ -78,7 +78,7 @@ export function DashboardNavUser({ user }: DashboardNavUserProps) {
 
   const dropdownMenuLabelContent = (
     <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-      <Avatar className="h-8 w-8 rounded-lg">
+      <Avatar className="size-8 rounded-lg">
         <AvatarImage src={getAvatarOrFallback(user)} alt={user.name} />
         <AvatarFallback className="rounded-lg">
           {user.name.charAt(0)}

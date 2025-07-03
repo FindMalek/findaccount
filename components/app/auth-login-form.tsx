@@ -134,7 +134,7 @@ export function AuthLoginForm({
           />
           <Button type="submit" className="w-full" disabled={isLoading}>
             {isLoading ? (
-              <Icons.spinner className="mr-2 h-6 w-6 animate-spin" />
+              <Icons.spinner className="mr-2 size-4 animate-spin" />
             ) : null}
             Login
           </Button>

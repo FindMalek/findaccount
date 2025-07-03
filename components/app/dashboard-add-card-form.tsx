@@ -10,13 +10,11 @@ import { UseFormReturn } from "react-hook-form"
 
 import { cn, getMetadataLabels } from "@/lib/utils"
 import { CardExpiryDateUtils } from "@/lib/utils/card-expiry-helpers"
+import { generateTagColor } from "@/lib/utils/color-helpers"
 
 import { CardPaymentInputs } from "@/components/shared/card-payment-inputs"
 import { CardStatusIndicator } from "@/components/shared/card-status-indicator"
-import {
-  getRandomSoftColor,
-  TagSelector,
-} from "@/components/shared/tag-selector"
+import { TagSelector } from "@/components/shared/tag-selector"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
@@ -195,7 +193,7 @@ export function DashboardAddCardForm({
                 getLabel={(tag) => tag.name}
                 createTag={(name) => ({
                   name,
-                  color: getRandomSoftColor(),
+                  color: generateTagColor(name, "pastel"),
                   userId: undefined,
                   containerId: undefined,
                 })}
@@ -218,7 +216,7 @@ export function DashboardAddCardForm({
           >
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-2">
-                <Plus className="h-4 w-4" />
+                <Plus className="size-4" />
                 <span className="font-medium">Additional Information</span>
               </div>
               {hasMetadataValues() && (
@@ -232,7 +230,7 @@ export function DashboardAddCardForm({
                 {showMetadata ? "Hide" : "Optional"}
               </span>
               <ChevronDown
-                className={`h-4 w-4 transition-transform ${showMetadata ? "rotate-180" : ""}`}
+                className={`size-4 transition-transform ${showMetadata ? "rotate-180" : ""}`}
               />
             </div>
           </Button>

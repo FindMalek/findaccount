@@ -53,7 +53,7 @@ export function DashboardSearchCombobox() {
           aria-expanded={open}
           className="w-fit justify-between"
         >
-          <Search className="h-4 w-4 shrink-0 opacity-50" />
+          <Search className="size-4 shrink-0 opacity-50" />
           <span className="text-muted-foreground ml-2 mr-2 hidden truncate text-sm sm:inline-block">
             Search items...
           </span>

@@ -3,6 +3,8 @@ import type { Icon } from "lucide-react"
 import { Icons } from "@/components/shared/icons"
 
 export * from "./dashboard"
+export * from "./entity"
+export * from "./common"
 
 export type NavItem = {
   title: string

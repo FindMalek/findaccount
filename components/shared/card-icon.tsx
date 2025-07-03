@@ -40,7 +40,7 @@ export function CardIcon({
           height={height}
         />
         {showManualIndicator && (
-          <div className="bg-primary absolute -right-1 -top-1 h-2 w-2 rounded-full" />
+          <div className="bg-primary absolute -right-1 -top-1 size-2 rounded-full" />
         )}
       </div>
     )
@@ -58,7 +58,7 @@ export function CardIcon({
     return (
       <Icons.creditCard
         strokeWidth={2}
-        className={`h-5 w-5 ${className || ""}`}
+        className={`size-5 ${className || ""}`}
       />
     )
   }

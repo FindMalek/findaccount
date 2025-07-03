@@ -68,3 +68,7 @@ export const EntityTypeSchema = z.enum(["CREDENTIAL", "CARD", "SECRET"])
 export const EntityTypeEnum = EntityTypeSchema.enum
 export type EntityType = z.infer<typeof EntityTypeSchema>
 export const LIST_ENTITY_TYPE = Object.values(EntityTypeEnum)
+
+export type SortField = "identifier" | "status" | "lastViewed" | "createdAt"
+export type SortDirection = "asc" | "desc" | null
+export type ViewMode = "cards" | "rows"

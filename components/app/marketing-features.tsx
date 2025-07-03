@@ -24,7 +24,7 @@ export function MarketingFeatures() {
           <Card className="hover:border-primary/20 border-2 transition-colors">
             <CardHeader>
               <div className="flex items-center gap-2">
-                <Icons.shield className="text-primary h-8 w-8" />
+                <Icons.shield className="text-primary size-5" />
                 <CardTitle>Military-Grade Encryption</CardTitle>
               </div>
               <CardDescription>
@@ -37,7 +37,7 @@ export function MarketingFeatures() {
           <Card className="hover:border-primary/20 border-2 transition-colors">
             <CardHeader>
               <div className="flex items-center gap-2">
-                <Icons.globe className="text-primary h-8 w-8" />
+                <Icons.globe className="text-primary size-5" />
                 <CardTitle>100% Open Source</CardTitle>
               </div>
               <CardDescription>
@@ -50,7 +50,7 @@ export function MarketingFeatures() {
           <Card className="hover:border-primary/20 border-2 transition-colors">
             <CardHeader>
               <div className="flex items-center gap-2">
-                <Icons.zap className="text-primary h-8 w-8" />
+                <Icons.zap className="text-primary size-5" />
                 <CardTitle>Lightning Fast</CardTitle>
               </div>
               <CardDescription>
@@ -63,7 +63,7 @@ export function MarketingFeatures() {
           <Card className="hover:border-primary/20 border-2 transition-colors">
             <CardHeader>
               <div className="flex items-center gap-2">
-                <Icons.key className="text-primary h-8 w-8" />
+                <Icons.key className="text-primary size-5" />
                 <CardTitle>Password Management</CardTitle>
               </div>
               <CardDescription>
@@ -76,7 +76,7 @@ export function MarketingFeatures() {
           <Card className="hover:border-primary/20 border-2 transition-colors">
             <CardHeader>
               <div className="flex items-center gap-2">
-                <Icons.creditCard className="text-primary h-8 w-8" />
+                <Icons.creditCard className="text-primary size-5" />
                 <CardTitle>Secure Card Storage</CardTitle>
               </div>
               <CardDescription>
@@ -89,7 +89,7 @@ export function MarketingFeatures() {
           <Card className="hover:border-primary/20 border-2 transition-colors">
             <CardHeader>
               <div className="flex items-center gap-2">
-                <Icons.lock className="text-primary h-8 w-8" />
+                <Icons.lock className="text-primary size-5" />
                 <CardTitle>Secret Management</CardTitle>
               </div>
               <CardDescription>

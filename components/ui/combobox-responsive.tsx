@@ -69,12 +69,12 @@ export function ComboboxResponsive({
                   alt={selectedItem.label}
                   width={20}
                   height={20}
-                  className="h-5 w-5 object-contain"
+                  className="size-5 object-contain"
                 />
               )}
               {selectedItem ? selectedItem.label : placeholder}
             </div>
-            <Icons.chevronDown className="h-4 w-4" />
+            <Icons.chevronDown className="size-4" />
           </Button>
         </PopoverTrigger>
         <PopoverContent 
@@ -110,12 +110,12 @@ export function ComboboxResponsive({
                 alt={selectedItem.label}
                 width={20}
                 height={20}
-                className="h-5 w-5 object-contain"
+                className="size-5 object-contain"
               />
             )}
             {selectedItem ? selectedItem.label : placeholder}
           </div>
-          <Icons.chevronDown className="h-4 w-4" />
+          <Icons.chevronDown className="size-4" />
         </Button>
       </DrawerTrigger>
       <DrawerContent>
@@ -183,7 +183,7 @@ function ComboboxList({
                     alt={item.label}
                     width={20}
                     height={20}
-                    className="h-5 w-5 object-contain"
+                    className="size-5 object-contain"
                   />
                 )}
                 {item.label}

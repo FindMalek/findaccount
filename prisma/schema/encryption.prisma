@@ -25,9 +25,9 @@ model EncryptedData {
   cardCvv    Card[] @relation("CardCvvEncryption")
   cardNumber Card[] @relation("CardNumberEncryption")
 
-  credentialPassword Credential[] @relation("CredentialPassword")
-
-  credentialHistoryPassword CredentialHistory[] @relation("CredentialHistoryPassword")
+  credentialPassword           Credential[]             @relation("CredentialPassword")
+  credentialHistoryPassword    CredentialHistory[]      @relation("CredentialHistoryPassword")
+  credentialKeyValueEncryption CredentialKeyValuePair[] @relation("CredentialKeyValueEncryption")
 
   secretValue Secret[] @relation("SecretValue")
 

@@ -1,11 +1,12 @@
 {
-  "name": "zero-locker",
+  "name": "@findmalek/zero-locker",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "pnpm db:generate && next build",
     "start": "next start",
+    "preview": "pnpm build && pnpm start",
     "lint": "next lint",
     "clean": "git clean -fd",
     "format": "prettier . --write && next lint --fix && pnpm db:format",
